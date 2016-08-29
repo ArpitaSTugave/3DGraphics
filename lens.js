@@ -171,6 +171,7 @@
 				line.position.x = 0; 
 				scene.add(line);
 				render();
+				
 	    	}
 	    }
 
@@ -204,7 +205,7 @@
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
 
-						if(v1 != 0){
+						if(j != 0){
 
 							intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,ab,bb,cb);
 							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,ab,bb,cb);
@@ -257,21 +258,17 @@
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
 
-						if(v1 != 0){
+						if(j != 0){
 							intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,af,bf,cf);
 							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);
 							intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,af,bf,cf);
 
 							triangle(v1, v2, v3, camera,material,renderer,scene,controls, intensity1,intensity2,intensity3);
+						}
 
 		                	//draw outer lens boundary
 							if(i == latitude/2){
 								geom_l = new THREE.Geometry();
-
-								//initial point
-								if(v3_past == 0){
-									v3_past = v3;
-								}
 
 								geom_l.vertices.push(v3_past);
 								geom_l.vertices.push(v3);
@@ -285,18 +282,19 @@
 								line.rotation.y = 90 * Math.PI / 180;   
 								line.position.x = 0; 
 								scene.add(line);
+								render();
 								v3_past = v3;
 								v3_front.push(v3);
 								v3_front_intensity.push(intensity);
 							}
 
-		                	render();
-	                	}
 	                	v1 = v2;
 	                	x1 = x_value/2; y1 = y_value/2; z11 = z_value/2;
 	                	x3_past = x_value_prev/2; y3_past = y_value_prev/2; z3_past = z_value_prev/2;
             	}
             }
+            v3_front.push(v3_front[0]);
+		    v3_front_intensity.push(v3_front_intensity[0]);
 /*
                 /////////////////////////////////////text
 	    		var text2 = document.createElement('div');

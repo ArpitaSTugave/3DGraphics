@@ -179,6 +179,8 @@
 	    function backhalflens(camera,material,renderer,scene,controls,a,b,c){
 	    		i = latitude/2;
 	    		v1 = 0;
+	    		v3_past = 0;
+	    		v2_past = 0;
 
 				for ( i = latitude/2 ; i <= latitude; i++){
 
@@ -204,20 +206,82 @@
 
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
+						intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,ab,bb,cb);
+						intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,ab,bb,cb);
+						intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,ab,bb,cb);
+
+						if(i == (latitude)){
+						}
 
 						if(j != 0){
 
-							intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,ab,bb,cb);
-							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,ab,bb,cb);
-							intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,ab,bb,cb);
-							triangle(v1, v2, v3, camera,material,renderer,scene,controls,intensity1,intensity2,intensity3);
-
+							if(i < (latitude)){
+								triangle(v1, v2, v3, camera,material,renderer,scene,controls,intensity1,intensity2,intensity3);
+							}
 
 		                	if(i == latitude/2){
 		                		v3_back.push(v1);
 		                		v3_back_intensity.push(intensity1);
 		                	}
 	                	}
+
+	                	//elliminate triangles at the pole
+							if(i == (latitude)){
+								v3 = new THREE.Vector3((x2+x3),(y2+y3),(z2+z3));
+								geom = new THREE.Geometry();
+					    		geom.vertices.push(v2);
+								geom.vertices.push(v3);
+								var mat =  new THREE.LineBasicMaterial({
+									wireframe: true,
+									wireframeLinewidth: 1
+								});
+								mat.color.r = intensity2; mat.color.g = intensity2; mat.color.b = intensity2;
+								line = new THREE.Line(geom, mat);
+								line.rotation.y = 90 * Math.PI / 180;   
+								line.position.x = 0; 
+								scene.add(line);
+								render();
+
+								if(v3_past == 0){
+									v3_past = v3;
+								}
+
+								geom = new THREE.Geometry();
+								geom.vertices.push(v3_past);
+								geom.vertices.push(v3);
+								var mat =  new THREE.LineBasicMaterial({
+									wireframe: true,
+									wireframeLinewidth: 1
+								});
+								mat.color.r = intensity2; mat.color.g = intensity2; mat.color.b = intensity2;
+								line = new THREE.Line(geom, mat);
+								line.rotation.y = 90 * Math.PI / 180;   
+								line.position.x = 0; 
+								scene.add(line);
+								render();
+
+								v3_past = v3;
+
+								if(v2_past == 0){
+									v2_past = v3;
+								}
+
+								geom = new THREE.Geometry();
+								geom.vertices.push(v2_past);
+								geom.vertices.push(v2);
+								var mat =  new THREE.LineBasicMaterial({
+									wireframe: true,
+									wireframeLinewidth: 1
+								});
+								mat.color.r = intensity2; mat.color.g = intensity2; mat.color.b = intensity2;
+								line = new THREE.Line(geom, mat);
+								line.rotation.y = 90 * Math.PI / 180;   
+								line.position.x = 0; 
+								scene.add(line);
+								render();
+
+								v2_past = v2;
+							}
 
 	                	v1 = v2;
 	                	x1 = x_value/2; y1 = y_value/2; z11 = z_value/2;
@@ -230,6 +294,10 @@
 	    		i = 0;
 	    		j = 0;
 	    		v1 = 0;
+	    		v3_past = 0;
+	    		v3_pasti = 0;
+	    		v2_past = 0;
+	    		v3_arr = [];
 
 				for ( i = 0 ; i <= latitude/2; i++){
 
@@ -258,35 +326,77 @@
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
 
-						if(j != 0){
+						if(i == 1){		
+							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);						
+							v3 = new THREE.Vector3((x2+x3),(y2+y3),(z2+z3));
+							geom = new THREE.Geometry();
+					    	geom.vertices.push(v3_past);
+							geom.vertices.push(v3);
+							var mat =  new THREE.LineBasicMaterial({
+								wireframe: true,
+								wireframeLinewidth: 1
+							});
+							mat.color.r = intensity2; mat.color.g = intensity2; mat.color.b = intensity2;
+							line = new THREE.Line(geom, mat);
+							line.rotation.y = 90 * Math.PI / 180;   
+							line.position.x = 0; 
+							scene.add(line);
+							render();
+
+							if(v3_past == 0){
+								v3_past = v3;
+							}
+							v3_past = v3;
+							v3_arr.push(v3);
+						}
+
+						if(i == 2){
+							geom = new THREE.Geometry();
+					    	geom.vertices.push(v3_arr[j]);
+							geom.vertices.push(v2);
+							var mat =  new THREE.LineBasicMaterial({
+								wireframe: true,
+								wireframeLinewidth: 1
+							});
+							mat.color.r = intensity2; mat.color.g = intensity2; mat.color.b = intensity2;
+							line = new THREE.Line(geom, mat);
+							line.rotation.y = 90 * Math.PI / 180;   
+							line.position.x = 0; 
+							scene.add(line);
+							render();
+						}
+
+						if(j != 0 && v1 != 0){
 							intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,af,bf,cf);
 							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);
 							intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,af,bf,cf);
 
-							triangle(v1, v2, v3, camera,material,renderer,scene,controls, intensity1,intensity2,intensity3);
+							if(i > 1){
+								triangle(v1, v2, v3, camera,material,renderer,scene,controls, intensity1,intensity2,intensity3);
+							}
 						}
 
 		                	//draw outer lens boundary
-							if(i == latitude/2){
-								geom_l = new THREE.Geometry();
+						if(i == latitude/2 && v1 != 0){
+							geom_l = new THREE.Geometry();
 
-								geom_l.vertices.push(v3_past);
-								geom_l.vertices.push(v3);
-								intensity = intensity_lens((x3+x3_past),(y3+y3_past),(z3+z3_past),l1,l2,l3,af,bf,cf);
-								var mat =  new THREE.LineBasicMaterial({
-									wireframe: true,
-									wireframeLinewidth: 1
-								});
-								mat.color.r = intensity; mat.color.g = intensity; mat.color.b = intensity;
-								line = new THREE.Line(geom_l, mat);
-								line.rotation.y = 90 * Math.PI / 180;   
-								line.position.x = 0; 
-								scene.add(line);
-								render();
-								v3_past = v3;
-								v3_front.push(v3);
-								v3_front_intensity.push(intensity);
-							}
+							geom_l.vertices.push(v3_pasti);
+							geom_l.vertices.push(v3);
+							intensity = intensity_lens((x3+x3_past),(y3+y3_past),(z3+z3_past),l1,l2,l3,af,bf,cf);
+							var mat =  new THREE.LineBasicMaterial({
+								wireframe: true,
+								wireframeLinewidth: 1
+							});
+							mat.color.r = intensity; mat.color.g = intensity; mat.color.b = intensity;
+							line = new THREE.Line(geom_l, mat);
+							line.rotation.y = 90 * Math.PI / 180;   
+							line.position.x = 0; 
+							scene.add(line);
+							render();
+							v3_pasti = v3;
+							v3_front.push(v3);
+							v3_front_intensity.push(intensity);
+						}
 
 	                	v1 = v2;
 	                	x1 = x_value/2; y1 = y_value/2; z11 = z_value/2;

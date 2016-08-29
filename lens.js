@@ -41,6 +41,9 @@
 				//lens function : draws lens
 				lens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance);
 
+				//draw rays
+				rays(camera,material,renderer,scene,controls);
+
 		window.addEventListener(' resize' , onWindowResize , false);
         }
 
@@ -58,6 +61,25 @@
 		camera.updateProjectionMatrix();
 
 		renderer.setSize( window.innerWidth , window.innerHeight );
+	    }
+
+	    //draws rays
+	    function rays(camera,material,renderer,scene,controls){
+	    		v1 = new THREE.Vector3(0,0,0);
+	    		v2 = new THREE.Vector3(0,0.5,-2);
+	    		geom = new THREE.Geometry();
+	    		geom.vertices.push(v1);
+				geom.vertices.push(v2);
+				var mat =  new THREE.LineBasicMaterial({
+					wireframe: true,
+					wireframeLinewidth: 1
+				});
+				mat.color.r = 0.7; mat.color.g = 0.2; mat.color.b = 0.2;
+				line = new THREE.Line(geom, mat);
+				line.rotation.y = 90 * Math.PI / 180;   
+				line.position.x = 0; 
+				scene.add(line);
+				render();
 	    }
 
 	    //draws lens

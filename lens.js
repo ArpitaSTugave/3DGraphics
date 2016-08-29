@@ -1,8 +1,8 @@
 	    var pi=Math.PI; //pi value
 	    var radius = 100;
-	    var theta_increment = 20;
-	    var phi_increment = 20;
-	    var camera, controls, scene, renderer , theta , phi, theta_prev, phi_prev, geom, mesh;
+	    var latitude = 50;
+	    var longitude = 50;
+	    var camera, controls, scene, renderer , i=0, j=0, geom, mesh;
 	    var v1,v2,v3;
 
         init();
@@ -26,37 +26,67 @@
 					wireframe: true,
 					wireframeLinewidth: 40 
 					});
-				v1 = new THREE.Vector3(0,0,0);
 
+				latitude0 = pi * (-0.5 + (i-1)/latitude);
+				z0 = Math.sin(latitude0);
+				zr0 = Math.cos(latitude0);
 
-				for ( phi = phi_increment ; phi <= 180 ; phi = phi + phi_increment){
-					for ( theta = theta_increment ; theta <= 360 ; theta = theta + theta_increment){
+				latitude1 = pi * (-0.5 + i/latitude);
+				z1 = Math.sin(latitude1);
+				zr1 = Math.cos(latitude1);
 
-							geom = new THREE.Geometry();
-							x_value = radius * Math.sin(theta) * Math.cos(phi);
-							y_value = radius * Math.sin(theta) * Math.sin(phi);
-							z_value = radius * Math.cos(theta);
-							x_value_prev = radius * Math.sin(theta_prev) * Math.cos(phi_prev);
-							y_value_prev = radius * Math.sin(theta_prev) * Math.sin(phi_prev);
-							z_value_prev = radius * Math.cos(theta_prev);
-							v2 = new THREE.Vector3(x_value,y_value,z_value);
-							v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
+				longitude0 = 2 * pi * (j - 1) / longitude;
+				x = Math.cos(longitude0);
+				y = Math.sin(longitude0);
 
-							geom.vertices.push( v1 );
-							geom.vertices.push( v2 );
-							geom.vertices.push( v3 );
+				geom = new THREE.Geometry();
+				x_value = x * zr0;
+				y_value = y * zr0;
+				z_value = z0;
+				x_value_prev = x * zr1;
+				y_value_prev = y * zr1;
+				z_value_prev = z1;
+				v1 = new THREE.Vector3(x_value,y_value,z_value);
 
-							geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
-							geom.computeFaceNormals();
+				for ( i = 0 ; i <=  latitude; i++){
 
-							mesh = new THREE.Mesh( geom, material);
-	                		scene.add(mesh);
-	                		render();
-	                		v1 = v2;
-	                		theta_prev = theta;
-					}
-					phi_prev = phi;
-				}
+					latitude0 = pi * (-0.5 + (i-1)/latitude);
+					z0 = Math.sin(latitude0);
+					zr0 = Math.cos(latitude0);
+
+					latitude1 = pi * (-0.5 + i/latitude);
+					z1 = Math.sin(latitude1);
+					zr1 = Math.cos(latitude1);
+
+					for (j = 0; j <= longitude; j++){
+
+						longitude0 = 2 * pi * (j - 1) / longitude;
+						x = Math.cos(longitude0);
+						y = Math.sin(longitude0);
+
+						geom = new THREE.Geometry();
+						x_value = x * zr0;
+						y_value = y * zr0;
+						z_value = z0;
+						x_value_prev = x * zr1;
+						y_value_prev = y * zr1;
+						z_value_prev = z1;
+						v2 = new THREE.Vector3(x_value,y_value,z_value);
+						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
+
+						geom.vertices.push( v1 );
+						geom.vertices.push( v2 );
+						geom.vertices.push( v3 );
+
+						geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
+						geom.computeFaceNormals();
+
+						mesh = new THREE.Mesh( geom, material);
+	                	scene.add(mesh);
+	                	render();
+	                	v1 = v2;
+            	}
+        	}
 
 		window.addEventListener(' resize' , onWindowResize , false);
         }

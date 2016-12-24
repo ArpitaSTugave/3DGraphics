@@ -7,6 +7,7 @@
 	    var distance = 0.2;
 	    var af=1,bf=1,cf=0.5,ab=1,bb=1,cb=0.7; //parameters for ellipsoid curves
 	    var l1 = 0; l2 = 1; l3 = 0; // direction of the light
+	    var ni = 1; nr = 1.5; //refractive indices
 
 	    //fixed parameters
 	    var pi=Math.PI; //pi value
@@ -42,7 +43,7 @@
 				lens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance);
 
 				//draw rays
-				rays(camera,material,renderer,scene,controls);
+				rays(camera,material,renderer,scene,controls,distance);
 
 		window.addEventListener(' resize' , onWindowResize , false);
         }
@@ -64,12 +65,77 @@
 	    }
 
 	    //draws rays
-	    function rays(camera,material,renderer,scene,controls){
-	    		v1 = new THREE.Vector3(0,0,0);
-	    		v2 = new THREE.Vector3(0,0.5,-2);
+	    function rays(camera,material,renderer,scene,controls,distance){
+	    		
+	    		// 1. ray coinciding with the front lens
+	    		x0 = 0.2; y0 = 0.5; z00 = -2; //starting point
+	    		vx = 0; vy = 0.4; vz = -1; //directional vector (something's off about signs in threejs)
+	    		mag_v = Math.sqrt(Math.abs((vx * vx) + (vy * vy) + (vz * vz)));
+				vx = vx/mag_v; vy = vy/mag_v; vz = vz/mag_v; //directional vector of 1st refracted ray
+	    		z0 = (z00 + distance);
+	    		a1 = (1/(af*af));b1 = (1/(bf*bf));c1 = (1/(cf*cf));
+	    		a_roots = ((a1*vx*vx) + (b1*vy*vy) + (c1*vz*vz)); //a,b,c value to find roots
+	    		b_roots = ((a1*2*x0*vx) + (b1*2*y0*vy) + (c1*2*z0*vz));
+	    		c_roots = (a1*x0*x0) + (b1*y0*y0) + (c1*z0*z0) - 1;
+	    		det = Math.sqrt(Math.abs((b_roots*b_roots)-(4*a_roots*c_roots)));
+	    		roots = (-b_roots + det)/(2*a_roots);
+	    		x1 = (x0 + (roots *vx)); y1 = (y0 + (roots *vy)); z1 = (z00 + (roots *vz));
+	    		v0 = new THREE.Vector3(x0,y0,z00);
+	    		v1 = new THREE.Vector3(x1,y1,z1);
 	    		geom = new THREE.Geometry();
-	    		geom.vertices.push(v1);
+	    		geom.vertices.push(v0);
+				geom.vertices.push(v1);
+				
+				// 2. ray refracted from front lens to back lens
+				Nx = a1*2*x1; Ny = b1*2*y1; Nz = c1*2*z1;
+				mag_N = Math.sqrt(Math.abs((Nx * Nx) + (Ny * Ny) + (Nz * Nz)));
+				Nx = Nx/mag_N; Ny = Ny/mag_N; Nz = Nz/mag_N;  
+				cos_theta = (Nx * vx) + (Ny * vy) + (Nz * vz);
+				dix = vx - (cos_theta * Nx); diy = vy - (cos_theta * Ny); diz = vz - (cos_theta * Nz);
+				drx = ni * dix/nr; dry = ni * diy/nr; drz = ni * diz/nr;
+				sin_thetar = Math.sqrt(Math.abs((drx * drx) + (dry * dry) + (drz * drz)));
+				cos_thetar = Math.sqrt(1 - (sin_thetar * sin_thetar));
+				vx = (cos_thetar * Nx) + drx; vy = (cos_thetar * Ny) + dry; vz = (cos_thetar * Nz) + drz;
+				mag_v = Math.sqrt(Math.abs((vx * vx) + (vy * vy) + (vz * vz)));
+				vx = vx/mag_v; vy = vy/mag_v; vz = vz/mag_v; //directional vector of 1st refracted ray
+				a1 = (1/(ab*ab));b1 = (1/(bb*bb));c1 = (1/(cb*cb));
+	    		a_roots = ((a1*vx*vx) + (b1*vy*vy) + (c1*vz*vz)); //a,b,c value to find roots
+	    		b_roots = ((a1*2*x1*vx) + (b1*2*y1*vy) + (c1*2*z1*vz));
+	    		c_roots = (a1*x1*x1) + (b1*y1*y1) + (c1*z1*z1) - 1;
+	    		det = Math.sqrt(Math.abs((b_roots*b_roots)-(4*a_roots*c_roots)));
+	    		roots = (-b_roots - det)/(2*a_roots);
+	    		x2 = (x1 + (roots *vx)); y2 = (y1 + (roots *vy)); z2 = (z1 + (roots *vz));
+	    		v2 = new THREE.Vector3(x2,y2,z2);
 				geom.vertices.push(v2);
+
+				// 3. ray refracted from front lens to back lens
+				Nx = -a1*2*x2; Ny = -b1*2*y2; Nz = -c1*2*z2;
+				mag_N = Math.sqrt(Math.abs((Nx * Nx) + (Ny * Ny) + (Nz * Nz)));
+				Nx = Nx/mag_N; Ny = Ny/mag_N; Nz = Nz/mag_N;  
+				cos_theta = (Nx * vx) + (Ny * vy) + (Nz * vz);
+				dix = vx - (cos_theta * Nx); diy = vy - (cos_theta * Ny); diz = vz - (cos_theta * Nz);
+				drx = nr * dix/ni; dry = nr * diy/ni; drz = nr * diz/ni;
+				sin_thetar = Math.sqrt(Math.abs((drx * drx) + (dry * dry) + (drz * drz)));
+				cos_thetar = Math.sqrt(1 - (sin_thetar * sin_thetar));
+				vx = (cos_thetar * Nx) + drx; vy = (cos_thetar * Ny) + dry; vz = (cos_thetar * Nz) + drz;
+	    		x3 = (x2 - (10 *vx)); y3 = (y2 - (10 *vy)); z3 = (z2 - (10 *vz));
+	    		v3 = new THREE.Vector3(x3,y3,z3);
+				geom.vertices.push(v3);
+				
+
+				/////////////////////////////////////text
+	    		var text2 = document.createElement('div');
+				text2.style.position = 'absolute';
+				//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+				text2.style.width = 100;
+				text2.style.height = 20;
+				text2.style.top = 120 + 'px';
+				text2.style.left = 100 + 'px';
+				text2.style.backgroundColor = "white";
+				text2.innerHTML = Ny;
+				document.body.appendChild(text2);
+				////////////////////////////////////////
+
 				var mat =  new THREE.LineBasicMaterial({
 					wireframe: true,
 					wireframeLinewidth: 1
@@ -339,10 +405,10 @@
 
 						geom = new THREE.Geometry();
 
-						x_value = a * x * zr0;y_value = b * y * zr0;z_value = (c * z0) - distance;
+						x_value = a * x * zr0;y_value = b * y * zr0;z_value = (c * (z0))-distance;
 						x2 = x_value/2; y2 = y_value/2; z2 = z_value/2;
 
-						x_value_prev = a * x * zr1;y_value_prev = b * y * zr1;z_value_prev = (c * z1) - distance;
+						x_value_prev = a * x * zr1;y_value_prev = b * y * zr1;z_value_prev = (c * (z1))-distance;
 						x3 = x_value_prev/2; y3 = y_value_prev/2; z3 = z_value_prev/2;
 
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
@@ -442,3 +508,4 @@
 				////////////////////////////////////////
 */
 	    }
+	    

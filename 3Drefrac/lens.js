@@ -68,9 +68,6 @@
 	    function rays(camera,material,renderer,scene,controls,distance){
 	    		
 	    		// 1. ray coinciding with the front lens
-	    		for (var i = .length - 1; i >= 0; i--) {
-	    			[i]
-	    		}
 	    		x0 = 0.2; y0 = 0.5; z00 = -2; //starting point
 	    		vx = 0; vy = 0.4; vz = -1; //directional vector (something's off about signs in threejs)
 	    		mag_v = Math.sqrt(Math.abs((vx * vx) + (vy * vy) + (vz * vz)));

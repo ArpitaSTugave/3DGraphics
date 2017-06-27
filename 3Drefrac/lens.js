@@ -40,12 +40,15 @@
 				var material;
 
 				//lens function : draws lens
-				lens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance);
+				DrawLens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance);
+
+				//box at infinity
+				BoxInfinity(camera,material,renderer,scene,controls);
 
 				//draw rays
-				rays(camera,material,renderer,scene,controls,distance);
+				DrawRays(camera,material,renderer,scene,controls,distance);
 
-		window.addEventListener(' resize' , onWindowResize , false);
+				window.addEventListener(' resize' , onWindowResize , false);
         }
 
     	function animate(){
@@ -58,14 +61,38 @@
         } 
 
 	    function onWindowResize(){
-		camera.aspect = window.innerWidth / window.innerHeight ; 
-		camera.updateProjectionMatrix();
+				camera.aspect = window.innerWidth / window.innerHeight ; 
+				camera.updateProjectionMatrix();
 
-		renderer.setSize( window.innerWidth , window.innerHeight );
+				renderer.setSize( window.innerWidth , window.innerHeight );
 	    }
 
+	    //draw box at infinity 
+	    function BoxInfinity(camera,material,renderer,scene,controls){
+	    		//draw box at infinity
+				var geometry = new THREE.BoxGeometry(5, 100, 0, 5, 100, 0);
+				var material = new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: true});
+				var cube = new THREE.Mesh(geometry, material);
+				cube.scale.set(2, 2, 2);
+				camera.aspect = 1;
+				cube.position.x = -5*window.innerWidth / window.innerHeight;
+				scene.add(cube);
+
+				/////////////////////////////////////text
+	    		var text2 = document.createElement('div');
+				text2.style.position = 'absolute';
+				//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+				text2.style.width = 100;
+				text2.style.height = 20;
+				text2.style.top = 120 + 'px';
+				text2.style.left = 100 + 'px';
+				text2.style.backgroundColor = "white";
+				text2.innerHTML = camera.fov;
+				document.body.appendChild(text2);
+				////////////////////////////////////////
+	    }
 	    //draws rays
-	    function rays(camera,material,renderer,scene,controls,distance){
+	    function DrawRays(camera,material,renderer,scene,controls,distance){
 	    		
 	    		// 1. ray coinciding with the front lens
 	    		x0 = 0.2; y0 = 0.5; z00 = -2; //starting point
@@ -123,19 +150,6 @@
 				geom.vertices.push(v3);
 				
 
-				/////////////////////////////////////text
-	    		var text2 = document.createElement('div');
-				text2.style.position = 'absolute';
-				//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-				text2.style.width = 100;
-				text2.style.height = 20;
-				text2.style.top = 120 + 'px';
-				text2.style.left = 100 + 'px';
-				text2.style.backgroundColor = "white";
-				text2.innerHTML = Ny;
-				document.body.appendChild(text2);
-				////////////////////////////////////////
-
 				var mat =  new THREE.LineBasicMaterial({
 					wireframe: true,
 					wireframeLinewidth: 1
@@ -149,7 +163,7 @@
 	    }
 
 	    //draws lens
-	    function lens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance){
+	    function DrawLens(camera,material,renderer,scene,controls,af,bf,cf,ab,bb,cb,distance){
 
 		    	material =  new THREE.MeshBasicMaterial({
 						color: 'lightblue',
@@ -157,14 +171,14 @@
 						wireframeLinewidth: 1
 						});
 
-	    		fronthalflens(camera,material,renderer,scene,controls,af,bf,cf,distance);
-				backhalflens(camera,material,renderer,scene,controls,ab,bb,cb);
-				joinlens(camera,material,renderer,scene,controls);
+	    		FrontHalfLens(camera,material,renderer,scene,controls,af,bf,cf,distance);
+				BackHalfLens(camera,material,renderer,scene,controls,ab,bb,cb);
+				JoinLens(camera,material,renderer,scene,controls);
 
 	    }
 
 	    //calculate intensity
-	    function intensity_lens(x,y,z,l1,l2,l3,a,b,c){
+	    function IntensityLens(x,y,z,l1,l2,l3,a,b,c){
 	    	intensity = 0;
 	    	Nx = 2*x/(a*a);Ny = 2*y/(b*b);Nz = 2*z/(c*c);
 	    	sum = Math.sqrt((Nx*Nx)+(Ny*Ny)+(Nz*Nz));
@@ -222,7 +236,7 @@
 	    }
 
 	    //join two lenses
-	    function joinlens(camera,material,renderer,scene,controls){
+	    function JoinLens(camera,material,renderer,scene,controls){
 
 	    	for(i=0; i <= v3_back.length-1; i++){
 
@@ -264,7 +278,7 @@
 	    }
 
 	    //draws back portion of the lens
-	    function backhalflens(camera,material,renderer,scene,controls,a,b,c){
+	    function BackHalfLens(camera,material,renderer,scene,controls,a,b,c){
 	    		i = latitude/2;
 	    		v1 = 0;
 	    		v3_past = 0;
@@ -294,9 +308,9 @@
 
 						v2 = new THREE.Vector3(x_value,y_value,z_value);
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
-						intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,ab,bb,cb);
-						intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,ab,bb,cb);
-						intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,ab,bb,cb);
+						intensity1 = IntensityLens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,ab,bb,cb);
+						intensity2 = IntensityLens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,ab,bb,cb);
+						intensity3 = IntensityLens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,ab,bb,cb);
 
 						if(i == (latitude)){
 						}
@@ -378,7 +392,7 @@
 	    }
 
 	    //draws front portion of the lens
-	    function fronthalflens(camera,material,renderer,scene,controls,a,b,c,distance){
+	    function FrontHalfLens(camera,material,renderer,scene,controls,a,b,c,distance){
 	    		i = 0;
 	    		j = 0;
 	    		v1 = 0;
@@ -415,7 +429,7 @@
 						v3 = new THREE.Vector3(x_value_prev,y_value_prev,z_value_prev);
 
 						if(i == 1){		
-							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);						
+							intensity2 = IntensityLens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);						
 							v3 = new THREE.Vector3((x2+x3),(y2+y3),(z2+z3));
 							geom = new THREE.Geometry();
 					    	geom.vertices.push(v3_past);
@@ -455,9 +469,9 @@
 						}
 
 						if(j != 0 && v1 != 0){
-							intensity1 = intensity_lens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,af,bf,cf);
-							intensity2 = intensity_lens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);
-							intensity3 = intensity_lens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,af,bf,cf);
+							intensity1 = IntensityLens((x1+x2),(y1+y2),(z11+z2),l1,l2,l3,af,bf,cf);
+							intensity2 = IntensityLens((x2+x3),(y2+y3),(z2+z3),l1,l2,l3,af,bf,cf);
+							intensity3 = IntensityLens((x3+x1),(y3+y1),(z3+z1),l1,l2,l3,af,bf,cf);
 
 							if(i > 1){
 								triangle(v1, v2, v3, camera,material,renderer,scene,controls, intensity1,intensity2,intensity3);
@@ -470,7 +484,7 @@
 
 							geom_l.vertices.push(v3_pasti);
 							geom_l.vertices.push(v3);
-							intensity = intensity_lens((x3+x3_past),(y3+y3_past),(z3+z3_past),l1,l2,l3,af,bf,cf);
+							intensity = IntensityLens((x3+x3_past),(y3+y3_past),(z3+z3_past),l1,l2,l3,af,bf,cf);
 							var mat =  new THREE.LineBasicMaterial({
 								wireframe: true,
 								wireframeLinewidth: 1

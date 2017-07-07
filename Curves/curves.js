@@ -171,8 +171,8 @@ function start_animation()
 	counter--;
 	if(counter<=0) {
 
-		i = Math.abs(Math.sqrt(0.5));
-		j =  -(i*1.5)+(i*i*i)+beta;
+		i = Math.sqrt(Math.abs(m/3));
+		j =  (i*m)+(i*i*i)+beta;
 		context.beginPath();
 		context.fillStyle = 'white';
 		context.strokeStyle = 'green';
@@ -180,7 +180,7 @@ function start_animation()
 		context.fill();
 		context.stroke();
 		i = -i;
-		j =  -(i*1.5)+(i*i*i)+beta;
+		j =  (i*m)+(i*i*i)+beta;
 		context.beginPath();
 		context.fillStyle = 'white';
 		context.strokeStyle = 'green';

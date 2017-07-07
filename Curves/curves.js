@@ -7,6 +7,7 @@
 	window.onload = start_animation;
 	beta = 0.1;
 	m = 1.5 //slope
+	counter = 10; //controls rate of blinking
 
 //function which runs on load
 function start_animation()
@@ -107,23 +108,11 @@ function start_animation()
 	context.lineTo(center2+(i*100),center1);
 	context.stroke();
 	context.beginPath();
-	context.fillStyle = 'white';
-	context.strokeStyle = 'green';
-	context.arc(center2+(i*100),center1,3,0,2*Math.PI);
-	context.fill();
-	context.stroke();
-	context.beginPath();
 	context.strokeStyle = 'black';
 	i = -i;
 	j =  -(i*1.5)+(i*i*i)+beta;
 	context.lineTo(center2+(i*100),center1-(j*100));
 	context.lineTo(center2+(i*100),center1);
-	context.stroke();
-	context.beginPath();
-	context.fillStyle = 'white';
-	context.strokeStyle = 'green';
-	context.arc(center2+(i*100),center1,3,0,2*Math.PI);
-	context.fill();
 	context.stroke();
 	context.fillStyle = "green";
 	context.font = '15px Verdana';
@@ -140,20 +129,45 @@ function start_animation()
 	context.fillText("0",center2-15,center1+15);
 	context.fillText("1",center2+100-5,center1-5);
 	context.fillText("-1",center2-100-5,center1-5);
-	context.beginPath();
-	context.fillStyle = 'black';
-	context.arc(center2+100,center1,2,0,2*Math.PI);
-	context.fill();
-	context.beginPath();
-	context.fillStyle = 'black';
-	context.arc(center2-100,center1,2,0,2*Math.PI);
-	context.fill();
 	context.fillText("X",center2+150,center1+15);
 	context.fillStyle = 'blue';
 	context.fillText(String.fromCharCode(946),center2-115,center1+170);
 	context.fillText("+X",center2-105,center1+170);
 	context.font = '10px Verdana';
 	context.fillText("3",center2-82,center1+158);
-	
+
+	//makes arc to blink
+	counter--;
+	if(counter<=0) {
+
+		i = Math.abs(Math.sqrt(0.5));
+		j =  -(i*1.5)+(i*i*i)+beta;
+		context.beginPath();
+		context.fillStyle = 'white';
+		context.strokeStyle = 'green';
+		context.arc(center2+(i*100),center1,3,0,2*Math.PI);
+		context.fill();
+		context.stroke();
+		i = -i;
+		j =  -(i*1.5)+(i*i*i)+beta;
+		context.beginPath();
+		context.fillStyle = 'white';
+		context.strokeStyle = 'green';
+		context.arc(center2+(i*100),center1,3,0,2*Math.PI);
+		context.fill();
+		context.stroke();
+		context.beginPath();
+		context.fillStyle = 'black';
+		context.arc(center2+100,center1,2,0,2*Math.PI);
+		context.fill();
+		context.beginPath();
+		context.fillStyle = 'black';
+		context.arc(center2-100,center1,2,0,2*Math.PI);
+		context.fill();
+		if(counter == -10)
+			counter = 10;
+	}
+
+	setTimeout("drawFunction(mouseX, mouseY)",20);
 
  }

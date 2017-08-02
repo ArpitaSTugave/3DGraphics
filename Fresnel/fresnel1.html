@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>fresnel</title>
+<link rel="stylesheet" href="fresnel.css">
+
+<style>
+body {
+  font-family: Verdana;
+  font-size: small;
+}
+canvas {
+  cursor: pointer;
+  border: 1px dashed black;
+}
+
+div {
+  margin: 15px 0px;
+}
+
+button {
+  padding: 4px 10px;
+}
+
+input[type=number] {
+  width: 50px;
+  margin-right: 15px;
+}
+
+</style>
+
+<script type="text/javascript" src="fresnel1.js">
+</script>
+
+</head>
+
+<body>
+  <canvas id="canvas" width="1300" height="550">
+   HTML5 Canvas not supported
+  </canvas>
+  <div>
+    <button onclick="option_1()">&phi;=k*y</button>
+    <button onclick="option_2()"> &phi; =k*arctan(y)</button>
+    <button onclick="option_3()">&phi;=arctan(k*y)</button>
+    <button onclick="option_4()">&phi;=k*arcsin(y)</button>
+    <button onclick="option_5()">&phi;=arcsin(k*y)</button>
+    <button onclick="option_6()">Exact Focus</button>
+    Focus:<input id="Focus" type="number" min="0" max="650" value="100">
+  </div>
+</body>
+</html>

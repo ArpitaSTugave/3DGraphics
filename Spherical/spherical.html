@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>spherical</title>
+<link rel="stylesheet" href="spherical.css">
+
+<style>
+body {
+  font-family: Verdana;
+  font-size: small;
+}
+canvas {
+  cursor: pointer;
+  border: 1px dashed black;
+}
+
+div {
+  margin: 15px 0px;
+}
+
+button {
+  padding: 4px 10px;
+}
+
+input[type=number] {
+  width: 50px;
+  margin-right: 15px;
+}
+
+</style>
+
+<script type="text/javascript" src="spherical.js">
+</script>
+
+</head>
+
+<body>
+  <canvas id="canvas" width="1300" height="400">
+   HTML5 Canvas not supported
+  </canvas>
+  <canvas id="canvasA" width="1300" height="200">
+   HTML5 Canvas not supported
+  </canvas>
+  <div>
+    Radius of curvature:<input id="radius" type="number" min="10" max="1000000" value="150">
+  </div>
+</body>
+</html>

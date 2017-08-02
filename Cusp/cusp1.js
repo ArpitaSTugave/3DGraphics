@@ -249,8 +249,27 @@ if(theta_space == 0 )
       context.rect(org_x, org_y, 0.5, y_len);
       context.strokeStyle = "rgba(100,255,100,0.3)";
       context.stroke();
-//find minimum and maximum
+//for first and last rays
+	//if(thetab== -1 || thetaa==361 )
+	//set=1;
 
+//finding maximum or the minimum
+/*
+	else if( nor_l < nor_lb && nor_l < nor_la) //for minimum
+	{
+	if(Math.abs(nor_l - nor_lb) > less && Math.abs(nor_l - nor_la) > less )
+	{
+	set=1;
+	}
+	}
+        else if( nor_l > nor_lb && nor_l > nor_la) //for maximum
+	{
+	if(Math.abs(nor_l - nor_lb) > less && Math.abs(nor_l - nor_la) > less )
+	{
+	set=1;
+	}
+	}
+*/ 
 	var comp1=nor_l+less;
 	var comp2=nor_l-less;
 if( ((comp1 < nor_lb) && (comp1 < nor_la))
@@ -308,7 +327,7 @@ if( ((comp1 < nor_lb) && (comp1 < nor_la))
 
 //draw axis
 	context.beginPath();
-        context.strokeStyle = 'black';
+    context.strokeStyle = 'black';
 	context.moveTo(plot_centerx,plot_centery);
 	context.lineTo(plot_centerx,(plot_centery)-(canvas.height - 400)-10);
 	context.lineWidth=1;
@@ -350,23 +369,23 @@ if( ((comp1 < nor_lb) && (comp1 < nor_la))
 	context.fillText("Max",plot_centerx-30,(plot_centery)-(canvas.height - 400)+5);
 	context.fillText("(0,0)",plot_centerx-10,(plot_centery)+10);
 	context.beginPath();
-	context.moveTo(plot_centerx+theta2,plot_centery-2.5);
-	context.lineTo(plot_centerx+theta2,plot_centery+2.5);
+	context.moveTo(plot_centerx+theta2,plot_centery);
+	context.lineTo(plot_centerx+theta2,plot_centery+5);
   	context.stroke();
 	context.fillText("360", plot_centerx+theta2-10,plot_centery+15);
 	context.beginPath();
-	context.moveTo(plot_centerx+(3*theta2/4),plot_centery-2.5);
-	context.lineTo(plot_centerx+(3*theta2/4),plot_centery+2.5);
+	context.moveTo(plot_centerx+(3*theta2/4),plot_centery);
+	context.lineTo(plot_centerx+(3*theta2/4),plot_centery+5);
   	context.stroke();
 	context.fillText("270", plot_centerx+(3*theta2/4)-10,plot_centery+15);
 	context.beginPath();
-	context.moveTo(plot_centerx+(theta2/2),plot_centery-2.5);
-	context.lineTo(plot_centerx+(theta2/2),plot_centery+2.5);
+	context.moveTo(plot_centerx+(theta2/2),plot_centery);
+	context.lineTo(plot_centerx+(theta2/2),plot_centery+5);
   	context.stroke();
 	context.fillText("180", plot_centerx+(theta2/2)-10,plot_centery+15);
 	context.beginPath();
-	context.moveTo(plot_centerx+(theta2/4),plot_centery-2.5);
-	context.lineTo(plot_centerx+(theta2/4),plot_centery+2.5);
+	context.moveTo(plot_centerx+(theta2/4),plot_centery);
+	context.lineTo(plot_centerx+(theta2/4),plot_centery+5);
   	context.stroke();
 	context.fillText("90", plot_centerx+(theta2/4)-5,plot_centery+15);
 
@@ -474,4 +493,3 @@ if( ((comp1 < nor_lb) && (comp1 < nor_la))
 
 	setTimeout("drawFunction(mouseX, mouseY)", 20);
     }
-

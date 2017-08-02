@@ -1,0 +1,44 @@
+<style>
+body {
+  font-family: Verdana;
+  font-size: small;
+}
+canvas {
+  cursor: pointer;
+  border: 1px dashed black;
+}
+
+div {
+  margin: 15px 0px;
+}
+
+button {
+  padding: 4px 10px;
+}
+
+input[type=number] {
+  width: 70px;
+  margin-right: 30px;
+}
+
+</style>
+
+<script type="text/javascript" src="eye_ray1.js">
+</script>
+
+</head>
+
+<body>
+  <canvas id="canvas" width="1300" height="600">
+   HTML5 Canvas not supported
+  <img id="eye" src="eye.png">
+  <img id="smalleye" src="smalleye.png">
+  </canvas>
+  <div>
+	<label for=index>Iris Length:</label>
+<input type=range min=1.1 max=4 value=2 id=index step=0.1 oninput="outputUpdate(value)">
+
+  </div>
+
+</body>
+</html>

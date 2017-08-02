@@ -1,0 +1,54 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset="UTF-8">
+<title>refract</title>
+<link rel="stylesheet" href="refract.css">
+
+<style>
+body {
+  font-family: Verdana;
+  font-size: small;
+}
+canvas {
+  cursor: pointer;
+  border: 1px dashed black;
+}
+
+div {
+  margin: 15px 0px;
+}
+
+button {
+  padding: 4px 10px;
+}
+</style>
+
+<script type="text/javascript" src="refractC.js">
+</script>
+
+</head>
+
+<body>
+  <canvas id="canvas" width="1000" height="600">
+   HTML5 Canvas not supported
+  </canvas>
+  <div>
+	<label for=index>Refractive Index:</label>
+<input type=range min=1 max=4 value=2 id=index step=0.1 oninput="outputUpdate(value)">
+<output for=index id=volume>2</output>
+<script>
+function outputUpdate(vol) {
+document.querySelector('#volume').value = vol;
+}
+</script>
+  </div>
+</body>
+</html>
+
+
+
